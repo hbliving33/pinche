@@ -58,6 +58,9 @@ def main(src, out, password):
         "keepers": keepers,
         "rules": (src / "rules.html").read_text(),
     }
+    trophy = src / "trophy.webp"  # league trophy photo (plate shows first names only)
+    if trophy.exists():
+        files["trophy"] = "data:image/webp;base64," + b64(trophy.read_bytes())
     for name, obj in files.items():
         raw = obj.encode() if isinstance(obj, str) else json.dumps(obj, ensure_ascii=False, separators=(",", ":")).encode()
         (out / f"{name}.enc").write_text(json.dumps(seal(key, raw)))
