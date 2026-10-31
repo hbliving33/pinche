@@ -29,6 +29,16 @@ def seal(key, data: bytes):
 def main(src, out, password):
     src, out = pathlib.Path(src), pathlib.Path(out)
     salt = os.urandom(16)
+    # same password -> keep the same salt, so devices that already unlocked stay unlocked
+    try:
+        old = json.loads((out / "lock.json").read_text())
+        s = base64.b64decode(old["salt"])
+        c = old["check"]
+        k = key_for(password, s)
+        if AESGCM(k).decrypt(base64.b64decode(c["iv"]), base64.b64decode(c["ct"]), None) == b"pinche":
+            salt = s
+    except Exception:
+        pass
     key = key_for(password, salt)
     out.mkdir(parents=True, exist_ok=True)
     for old in list(out.glob("*.json")) + list(out.glob("*.enc")):
