@@ -76,6 +76,9 @@
       <nav id="site-nav">${PAGES.map((p) => `<a href="${p.href}"${p.id === page || (page === "season" && p.id === "history") || (page === "h2h" && p.id === "records") || (page === "partners" && p.id === "owners") ? ' class="active"' : ""}>${p.label}</a>`).join("")}</nav>
     </div>`;
     document.body.prepend(header);
+    // jump links land just below the pinned header (it is taller on phones)
+    const setHdr = () => document.documentElement.style.setProperty("--hdr", header.offsetHeight + "px");
+    setHdr(); addEventListener("resize", setHdr); addEventListener("load", setHdr);
     const t = document.getElementById("nav-toggle");
     t.onclick = () => { const open = header.classList.toggle("nav-open"); t.setAttribute("aria-expanded", open); };
     const footer = document.createElement("footer");
