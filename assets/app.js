@@ -216,23 +216,25 @@
       const titles = Object.entries(champCount).sort((a, b) => b[1].length - a[1].length || a[1][0] - b[1][0]);
       const sOf = (y) => h.seasons.find((x) => x.year === y);
       el.innerHTML = `<h1>Record Book</h1>
-        <h2>Championships</h2>${T('<th>Owner</th><th class="num">Titles</th><th>Years</th>', titles.map(([n, ys]) => `<tr><td>${esc(who(n) || n)}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}
+        <nav class="subnav subnav-8" aria-label="Record Book sections"><a href="#titles">Champions</a><a href="#high">High Scores</a><a href="#low">Low Scores</a><a href="#blowouts">Blowouts</a><a href="#shootouts">Big Games</a><a href="#toilet">Toilet Bowl</a><a href="#points">Most Points</a><a href="#best">Best Records</a></nav>
+        
+        <h2 id="titles">Championships</h2>${T('<th>Owner</th><th class="num">Titles</th><th>Years</th>', titles.map(([n, ys]) => `<tr><td>${esc(who(n) || n)}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}
         <div class="two-col">
-          <div><h2>Highest Scores</h2>${T('<th>Team</th><th class="num">Pts</th><th>When</th>', top(scores, "pts").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pts)}</td><td>${yw(r)}</td></tr>`).join(""))}</div>
-          <div><h2>Lowest Scores</h2>${T('<th>Team</th><th class="num">Pts</th><th>When</th>', top(scores, "pts", 10, true).map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pts)}</td><td>${yw(r)}</td></tr>`).join(""))}</div>
+          <div><h2 id="high">Highest Scores</h2>${T('<th>Team</th><th class="num">Pts</th><th>When</th>', top(scores, "pts").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pts)}</td><td>${yw(r)}</td></tr>`).join(""))}</div>
+          <div><h2 id="low">Lowest Scores</h2>${T('<th>Team</th><th class="num">Pts</th><th>When</th>', top(scores, "pts", 10, true).map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pts)}</td><td>${yw(r)}</td></tr>`).join(""))}</div>
         </div>
-        <h2>Biggest Blowouts</h2>${T('<th>Winner</th><th class="num">Score</th><th class="hide-sm">Loser</th><th class="num">Margin</th><th>When</th>', top(blow, "margin").map((r) => `<tr><td>${tw(sOf(r.year), r.w)}</td><td class="num">${pts(r.ws)}&ndash;${pts(r.ls)}</td><td class="hide-sm">${tw(sOf(r.year), r.l)}</td><td class="num">${pts(r.margin)}</td><td>${yw(r)}</td></tr>`).join(""))}
-        <h2>Highest-Scoring Games</h2>${T('<th>Matchup</th><th class="num">Total</th><th>When</th>', top(combined, "total").map((r) => `<tr><td>${tw(sOf(r.year), r.a)} ${pts(r.as)}, ${tw(sOf(r.year), r.b)} ${pts(r.bs)}</td><td class="num">${pts(r.total)}</td><td>${yw(r)}</td></tr>`).join(""))}
-        <h2>Toilet Bowl</h2>
+        <h2 id="blowouts">Biggest Blowouts</h2>${T('<th>Winner</th><th class="num">Score</th><th class="hide-sm">Loser</th><th class="num">Margin</th><th>When</th>', top(blow, "margin").map((r) => `<tr><td>${tw(sOf(r.year), r.w)}</td><td class="num">${pts(r.ws)}&ndash;${pts(r.ls)}</td><td class="hide-sm">${tw(sOf(r.year), r.l)}</td><td class="num">${pts(r.margin)}</td><td>${yw(r)}</td></tr>`).join(""))}
+        <h2 id="shootouts">Highest-Scoring Games</h2>${T('<th>Matchup</th><th class="num">Total</th><th>When</th>', top(combined, "total").map((r) => `<tr><td>${tw(sOf(r.year), r.a)} ${pts(r.as)}, ${tw(sOf(r.year), r.b)} ${pts(r.bs)}</td><td class="num">${pts(r.total)}</td><td>${yw(r)}</td></tr>`).join(""))}
+        <h2 id="toilet">Toilet Bowl</h2>
         <div class="two-col">
           <div>${T('<th class="num">Year</th><th>Loser</th><th class="num">Score</th>', h.seasons.filter((s) => s.toiletBowl).map((s) => `<tr><td class="num">${seasonLink(s.year)}</td><td>${tw(s, s.toiletBowl.loser)}</td><td class="num">${pts(s.toiletBowl.score[0])}&ndash;${pts(s.toiletBowl.score[1])}</td></tr>`).join(""))}</div>
           <div>${T('<th>Owner</th><th class="num">Toilet bowls</th><th>Years</th>', Object.entries(h.seasons.filter((s) => s.toiletBowl).reduce((m, s) => { const o = s.toiletBowl.loserOwner; (m[o] = m[o] || []).push(s.year); return m; }, {})).sort((x, y) => y[1].length - x[1].length).map(([o, ys]) => `<tr><td>${esc(who(o))}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}</div>
         </div>
         <div class="two-col">
-          <div><h2>Most Points, Season</h2>${T('<th>Team</th><th class="num">PF</th><th class="num">Year</th>', top(seasonsPF, "pf").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pf)}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
-          <div><h2>Best Regular Season</h2>${T('<th>Team</th><th class="num">Record</th><th class="num">Year</th>', top(seasonsPF, "pct").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${r.w}-${r.l}${r.t ? "-" + r.t : ""}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
+          <div><h2 id="points">Most Points, Season</h2>${T('<th>Team</th><th class="num">PF</th><th class="num">Year</th>', top(seasonsPF, "pf").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pf)}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
+          <div><h2 id="best">Best Regular Season</h2>${T('<th>Team</th><th class="num">Record</th><th class="num">Year</th>', top(seasonsPF, "pct").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${r.w}-${r.l}${r.t ? "-" + r.t : ""}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
         </div>`;
-
+      if (location.hash) { const x = document.querySelector(location.hash); if (x) x.scrollIntoView(); }
     },
 
     h2h(data, h, el) {

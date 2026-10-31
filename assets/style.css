@@ -288,6 +288,8 @@ body.locked .site-header, body.locked footer { display: none; }
 .subnav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 18px; }
 .subnav a { min-width: 0; text-align: center; background: var(--panel); border: 1px solid var(--line); border-bottom: 3px solid var(--accent); color: var(--text); font-weight: 700; padding: 11px 8px; border-radius: 10px; white-space: nowrap; }
 .subnav a:hover, .subnav a:focus-visible { text-decoration: none; background: var(--red); border-color: var(--red); border-bottom-color: var(--accent); }
-#champions, #seasons, #h2h { scroll-margin-top: 12px; }
+main h2[id] { scroll-margin-top: 12px; }
 .h2h-intro { color: var(--muted); margin: 0 0 10px; }
 @media (max-width: 480px) { .subnav { gap: 6px; } .subnav a { font-size: 14px; padding: 11px 2px; } }
+.subnav-8 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 480px) { .subnav-8 { grid-template-columns: repeat(3, 1fr); } }
