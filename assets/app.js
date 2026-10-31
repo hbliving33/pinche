@@ -218,7 +218,8 @@
       h.seasons.forEach((s) => { if (s.champion) { const n = s.champion.owner || base(s.champion.team); champCount[n] = (champCount[n] || []).concat(s.year); } });
       const titles = Object.entries(champCount).sort((a, b) => b[1].length - a[1].length || a[1][0] - b[1][0]);
       const sOf = (y) => h.seasons.find((x) => x.year === y);
-      el.innerHTML = `<h1>Record Book</h1>
+      const notes = data.footnotes || [];
+      el.innerHTML = `<div class="rb-head"><h1>Record Book</h1>${notes.length ? `<aside class="footnotes" aria-label="League footnotes"><div class="fn-title">League Footnotes</div><ol>${notes.map((n, i) => `<li><span class="fn-mark">${"*".repeat(i + 1)}</span>${esc(n)}</li>`).join("")}</ol></aside>` : ""}</div>
         <nav class="subnav subnav-8" aria-label="Record Book sections"><a href="#titles">Champions</a><a href="#high">High Scores</a><a href="#low">Low Scores</a><a href="#blowouts">Blowouts</a><a href="#shootouts">Big Games</a><a href="#toilet">Toilet Bowl</a><a href="#points">Most Points</a><a href="#best">Best Records</a></nav>
         
         <h2 id="titles">Championships</h2>${T('<th>Owner</th><th class="num">Titles</th><th>Years</th>', titles.map(([n, ys]) => `<tr><td>${esc(who(n) || n)}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}
