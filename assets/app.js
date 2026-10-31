@@ -142,7 +142,7 @@
       el.innerHTML = `
         ${last ? `<section class="champ-banner">
           <div class="trophy" aria-hidden="true">&#127942;</div>
-          <div><div class="label">Defending Champion &middot; ${last.year}</div>
+          <div><div class="label">Defending King Dick Cup Champion &middot; ${last.year}</div>
           <div class="champ-name">${esc(champName(last.champion))}</div>
           ${last.champion.score && last.champion.runnerUp ? `<div class="final-score">
             <div class="fs-row won"><span>${esc(base(last.champion.team))}</span><strong>${pts(last.champion.score[0])}</strong></div>
@@ -189,7 +189,7 @@
         el.innerHTML = `
           <div class="season-nav">${prev ? `<a href="#y${prev.year}">&larr; ${prev.year}</a>` : "<span></span>"}<a href="history.html">All seasons</a>${next ? `<a href="#y${next.year}">${next.year} &rarr;</a>` : "<span></span>"}</div>
           <h1>${s.year} Season</h1>${s.leagueName ? `<p class="lead">Played as the ${esc(s.leagueName)}</p>` : ""}
-          ${c ? `<section class="champ-banner"><div class="trophy" aria-hidden="true">&#127942;</div><div><div class="label">${s.year} Champion</div><div class="champ-name">${esc(champName(c))}</div>${c.score && c.runnerUp ? `<div class="final-score">
+          ${c ? `<section class="champ-banner"><div class="trophy" aria-hidden="true">&#127942;</div><div><div class="label">${s.year} King Dick Cup Champion</div><div class="champ-name">${esc(champName(c))}</div>${c.score && c.runnerUp ? `<div class="final-score">
             <div class="fs-row won"><span>${esc(base(c.team))}</span><strong>${pts(c.score[0])}</strong></div>
             <div class="fs-row"><span>${esc(base(c.runnerUp))}</span><strong>${pts(c.score[1])}</strong></div></div>` : ""}</div></section>`
             : `<div class="banner">The ${s.year} championship game isn't in the RT Sports archive files. If you know who won, it gets added here.</div>`}
