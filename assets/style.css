@@ -294,3 +294,7 @@ main h2[id] { scroll-margin-top: calc(var(--hdr, 90px) + 14px); }
 .subnav-8 { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 480px) { .subnav-8 { grid-template-columns: repeat(3, 1fr); } }
 #h2h-mount { min-height: calc(100vh - var(--hdr, 90px) - 90px); min-height: calc(100dvh - var(--hdr, 90px) - 90px); }
+/* Champion box: league trophy */
+.champ-banner .trophy.has-img { font-size: 0; flex: 0 0 auto; }
+.champ-banner .trophy img { display: block; height: 176px; width: auto; filter: drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
+@media (max-width: 760px) { .champ-banner .trophy img { height: 136px; } }

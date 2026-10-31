@@ -390,7 +390,18 @@
       document.title = `${p ? p.label : page === "h2h" ? "Head-to-Head" : page === "partners" ? "Partners" : "Season"} | ${data.league.name}`;
       [...data.owners, ...(data.formerOwners || [])].forEach((o) => (WHO[o.id] = o.first));
       chrome(data.league);
-      render[page](data, hist, document.querySelector("main"));
+      const main = document.querySelector("main");
+      // league trophy photo in every champion box (kept inside the locked data)
+      let trophy = null;
+      const fillTrophies = () => main.querySelectorAll(".champ-banner .trophy:not(.has-img)").forEach((el) => {
+        (trophy ||= getRaw("trophy").catch(() => null)).then((src) => {
+          if (!src || el.classList.contains("has-img")) return;
+          el.classList.add("has-img"); el.innerHTML = `<img src="${src}" alt="King Dick Cup">`;
+        });
+      });
+      new MutationObserver(fillTrophies).observe(main, { childList: true, subtree: true });
+      render[page](data, hist, main);
+      fillTrophies();
     })
     .catch((e) => { document.querySelector("main").textContent = "Could not load league data: " + e.message; });
 })();
