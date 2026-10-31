@@ -34,7 +34,7 @@
       document.body.classList.add("locked");
       const main = document.querySelector("main");
       main.innerHTML = `<form class="gate" id="gate" autocomplete="on">
-          <img src="assets/logo.jpg" alt="" class="gate-logo">
+          <img src="assets/logo.jpg?v=3" alt="" class="gate-logo">
           <h1>Pinche Garcia LLC</h1>
           <p>Members only.</p>
           <input type="text" name="username" value="pinche" autocomplete="username" hidden>
@@ -71,7 +71,7 @@
     const header = document.createElement("header");
     header.className = "site-header";
     header.innerHTML = `<div class="inner">
-      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo.jpg" alt="Pinche Garcia LLC logo" width="52" height="52"><span>${esc(league.name)}<small>Fantasy Football &middot; Est. ${esc(league.established)}</small></span></a>
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo.jpg?v=3" alt="Pinche Garcia LLC logo" width="76" height="76"><span>${esc(league.name)}<small>Fantasy Football &middot; Est. ${esc(league.established)}</small></span></a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav id="site-nav">${PAGES.map((p) => `<a href="${p.href}"${p.id === page || (page === "season" && p.id === "history") || (page === "h2h" && p.id === "records") || (page === "partners" && p.id === "owners") ? ' class="active"' : ""}>${p.label}</a>`).join("")}</nav>
     </div>`;

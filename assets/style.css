@@ -1,4 +1,6 @@
 /* Fonts are served from this site (no Google Fonts calls). */
+@font-face{font-family:"Teko";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/teko-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Teko";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/teko-latin-700-normal.woff2) format("woff2")}
 @font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/inter-latin-400-normal.woff2) format("woff2")}
 @font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/inter-latin-500-normal.woff2) format("woff2")}
 @font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/inter-latin-600-normal.woff2) format("woff2")}
@@ -320,3 +322,15 @@ th.num .sort-ind { margin-left: 2px; }
 .footnotes li { display: flex; gap: 6px; font-style: italic; }
 .fn-mark { color: var(--accent); font-weight: 700; font-style: normal; min-width: 1.3em; }
 @media (max-width: 760px) { .footnotes { flex-basis: 100%; } }
+/* Header wordmark: speed italic */
+.brand { gap: 14px; }
+.brand > span { font-family: "Teko", var(--display); font-weight: 700; font-size: 42px; letter-spacing: 1.5px; line-height: .85; font-style: italic; padding-top: 4px; }
+.brand small { font-family: "Teko", var(--font); font-weight: 600; font-size: 17px; letter-spacing: 3.5px; font-style: italic; line-height: 1.1; margin-top: 2px; }
+.brand-logo { width: 76px; height: 76px; }
+@media (max-width: 760px) {
+  .brand { gap: 11px; }
+  .brand > span { font-size: 34px; }
+  .brand small { font-size: 14px; letter-spacing: 2.6px; }
+  .brand-logo { width: 60px; height: 60px; }
+}
+@media (max-width: 360px) { .brand > span { font-size: 29px; } .brand small { font-size: 12.5px; letter-spacing: 2px; } }
