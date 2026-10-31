@@ -82,7 +82,7 @@
     const t = document.getElementById("nav-toggle");
     t.onclick = () => { const open = header.classList.toggle("nav-open"); t.setAttribute("aria-expanded", open); };
     const footer = document.createElement("footer");
-    footer.innerHTML = `${esc(league.format)}<br>&copy; ${new Date().getFullYear()} <a href="partners.html">Pinche Garcia LLC</a>.  All rights reserved.<br><span class="legal">For league members only.  No part of this site may be copied, shared or redistributed without the written consent of the partners.</span>`;
+    footer.innerHTML = `${esc(league.format)}<br>&copy; ${new Date().getFullYear()} <a href="owners.html">Pinche Garcia LLC</a>.  All rights reserved.<br><span class="legal">For league members only.  No part of this site may be copied, shared or redistributed without the written consent of the partners.</span>`;
     document.body.append(footer);
   }
 
