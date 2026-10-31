@@ -399,9 +399,49 @@
           el.classList.add("has-img"); el.innerHTML = `<img src="${src}" alt="King Dick Cup">`;
         });
       });
-      new MutationObserver(fillTrophies).observe(main, { childList: true, subtree: true });
+      // every table sorts by clicking its column headings; sections with jump buttons get a "Top" link
+      const cellKey = (td) => {
+        const s = (td ? td.textContent : "").trim();
+        const m = s.replace(/[$,]/g, "").match(/^[^\dA-Za-z-]*(-?\d+(?:\.\d+)?)/);
+        return m ? { n: parseFloat(m[1]) } : { s: s.toLowerCase() };
+      };
+      const enhance = () => {
+        main.querySelectorAll("table:not([data-sort])").forEach((tb) => {
+          const ths = tb.querySelectorAll("thead th"), body = tb.tBodies[0];
+          if (!ths.length || !body || body.rows.length < 2) return;
+          tb.dataset.sort = "1";
+          ths.forEach((th, col) => {
+            th.classList.add("sortable"); th.tabIndex = 0; th.setAttribute("role", "button");
+            th.insertAdjacentHTML("beforeend", '<span class="sort-ind" aria-hidden="true"></span>');
+            const go = () => {
+              const rows = [...body.rows], dir = th.dataset.dir === "asc" ? "desc" : th.dataset.dir === "desc" ? "asc" : null;
+              const first = cellKey(rows[0].cells[col]);
+              const d = dir || ("n" in first ? "desc" : "asc");
+              const cmp = (dd) => (a, b) => {
+                const x = cellKey(a.cells[col]), y = cellKey(b.cells[col]);
+                const r = "n" in x && "n" in y ? x.n - y.n : "n" in x ? -1 : "n" in y ? 1 : x.s.localeCompare(y.s);
+                return dd === "asc" ? r : -r;
+              };
+              let d2 = d, sorted = [...rows].sort(cmp(d));
+              if (!dir && sorted.every((r, i) => r === rows[i])) { d2 = d === "asc" ? "desc" : "asc"; sorted = [...rows].sort(cmp(d2)); } // already in that order: flip
+              rows.splice(0, rows.length, ...sorted);
+              ths.forEach((h) => { delete h.dataset.dir; h.removeAttribute("aria-sort"); });
+              th.dataset.dir = d2; th.setAttribute("aria-sort", d2 === "asc" ? "ascending" : "descending");
+              body.append(...rows);
+            };
+            th.onclick = go; th.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+          });
+        });
+        if (main.querySelector(".subnav")) main.querySelectorAll("h2[id]:not([data-top])").forEach((h) => {
+          h.dataset.top = "1";
+          h.insertAdjacentHTML("beforeend", '<a class="to-top" href="#">Top &uarr;</a>');
+          h.lastChild.onclick = (e) => { e.preventDefault(); scrollTo({ top: 0, behavior: "smooth" }); history.replaceState(null, "", location.pathname + location.search); };
+        });
+      };
+      let queued = false;
+      new MutationObserver(() => { fillTrophies(); if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; enhance(); }); } }).observe(main, { childList: true, subtree: true });
       render[page](data, hist, main);
-      fillTrophies();
+      fillTrophies(); enhance();
     })
     .catch((e) => { document.querySelector("main").textContent = "Could not load league data: " + e.message; });
 })();

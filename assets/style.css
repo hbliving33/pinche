@@ -298,3 +298,16 @@ main h2[id] { scroll-margin-top: calc(var(--hdr, 90px) + 14px); }
 .champ-banner .trophy.has-img { font-size: 0; flex: 0 0 auto; }
 .champ-banner .trophy img { display: block; height: 176px; width: auto; filter: drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
 @media (max-width: 760px) { .champ-banner .trophy img { height: 136px; } }
+/* Sortable columns */
+th.sortable { cursor: pointer; user-select: none; -webkit-user-select: none; }
+th.sortable:hover, th.sortable:focus-visible { color: #fff; }
+.sort-ind { display: inline-block; width: 1em; margin-left: 4px; font-size: 10px; opacity: .45; }
+.sort-ind::after { content: "\2195"; }
+th[data-dir] { color: var(--accent); }
+th[data-dir] .sort-ind { opacity: 1; }
+th[data-dir="asc"] .sort-ind::after { content: "\25B2"; }
+th[data-dir="desc"] .sort-ind::after { content: "\25BC"; }
+th.num .sort-ind { margin-left: 2px; }
+/* Back-to-top link on section headings */
+.to-top { margin-left: auto; align-self: center; font-family: var(--font); font-size: 13px; font-weight: 700; letter-spacing: .3px; text-transform: none; color: var(--accent); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+.to-top:hover { text-decoration: none; background: var(--red); border-color: var(--red); color: #fff; }
