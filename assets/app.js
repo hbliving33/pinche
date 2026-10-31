@@ -60,6 +60,7 @@
   }
   const CH = "World Champion ";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const gameYears = (h) => { const ys = imported(h).filter((s) => s.weeks.some((w) => w.games.length)).map((s) => +s.year); return [Math.min(...ys), Math.max(...ys)]; };
   const pts = (n) => (n == null ? "" : Number(n).toLocaleString(undefined, { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }));
   const base = (n) => (n ? n.replace(/^(The)?World Champion /, (m, the) => (the ? "The " : "")) : n);
   const champName = (c) => (c.team ? base(c.team) : who(c.owner) || "");
@@ -197,6 +198,7 @@
     },
 
     records(data, h, el) {
+      const [gy0, gy1] = gameYears(h);
       const g = allGames(h);
       const scores = g.flatMap((x) => [{ team: x.a, pts: x.as, year: x.year, week: x.week }, { team: x.b, pts: x.bs, year: x.year, week: x.week }]);
       const top = (arr, key, n = 10, asc = false) => [...arr].sort((p, q) => (asc ? p[key] - q[key] : q[key] - p[key])).slice(0, n);
@@ -209,7 +211,7 @@
       h.seasons.forEach((s) => { if (s.champion) { const n = s.champion.owner || base(s.champion.team); champCount[n] = (champCount[n] || []).concat(s.year); } });
       const titles = Object.entries(champCount).sort((a, b) => b[1].length - a[1].length || a[1][0] - b[1][0]);
       const sOf = (y) => h.seasons.find((x) => x.year === y);
-      el.innerHTML = `<div class="title-row"><h1>Record Book</h1><a class="ball-btn" href="h2h.html" aria-label="Head-to-Head: compare any two owners"><span class="ball"><svg viewBox="0 0 140 90" aria-hidden="true"><defs><radialGradient id="lg" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#b4553a"/><stop offset=".45" stop-color="#8a3324"/><stop offset=".85" stop-color="#5a1d14"/><stop offset="1" stop-color="#3a110b"/></radialGradient><filter id="pb" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 -.18"/><feComposite in2="SourceGraphic" operator="in"/></filter><clipPath id="bc"><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z"/></clipPath></defs><g transform="rotate(-28 70 45)"><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z" fill="url(#lg)"/><g clip-path="url(#bc)"><rect width="140" height="90" fill="#000" filter="url(#pb)"/><path d="M8 45C40 22 100 22 132 45" fill="none" stroke="#2a0c07" stroke-width="1.4" opacity=".7"/><path d="M8 45C40 68 100 68 132 45" fill="none" stroke="#2a0c07" stroke-width="1.4" opacity=".55"/><ellipse cx="58" cy="26" rx="34" ry="8" fill="#fff" opacity=".12"/></g><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z" fill="none" stroke="#2a0c07" stroke-width="2"/><path d="M40 27.5C55 23.5 85 23.5 100 27.5" fill="none" stroke="#2a0c07" stroke-width="5" stroke-linecap="round" opacity=".55"/><path d="M42 27C56 23.5 84 23.5 98 27" fill="none" stroke="#f4efe6" stroke-width="2.6" stroke-linecap="round"/><g stroke="#f4efe6" stroke-width="3.4" stroke-linecap="round"><path d="M50 19.6L50 30.6"/><path d="M57 18.5L57 29.5"/><path d="M64 18L64 29"/><path d="M71 17.9L71 28.9"/><path d="M78 18.1L78 29.1"/><path d="M85 18.6L85 29.6"/><path d="M92 19.6L92 30.6"/></g></g></svg></span><span class="ball-label">Head-to-Head</span><span class="ball-hint">Tap to compare any two owners</span></a></div>
+      el.innerHTML = `<div class="title-row"><h1>Record Book</h1><a class="ball-btn" href="h2h.html" aria-label="Head-to-Head: compare any two owners"><span class="ball"><svg viewBox="0 0 140 90" aria-hidden="true"><defs><radialGradient id="lg" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#b4553a"/><stop offset=".45" stop-color="#8a3324"/><stop offset=".85" stop-color="#5a1d14"/><stop offset="1" stop-color="#3a110b"/></radialGradient><filter id="pb" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 -.18"/><feComposite in2="SourceGraphic" operator="in"/></filter><clipPath id="bc"><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z"/></clipPath></defs><g transform="rotate(-28 70 45)"><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z" fill="url(#lg)"/><g clip-path="url(#bc)"><rect width="140" height="90" fill="#000" filter="url(#pb)"/><path d="M8 45C40 22 100 22 132 45" fill="none" stroke="#2a0c07" stroke-width="1.4" opacity=".7"/><path d="M8 45C40 68 100 68 132 45" fill="none" stroke="#2a0c07" stroke-width="1.4" opacity=".55"/><ellipse cx="58" cy="26" rx="34" ry="8" fill="#fff" opacity=".12"/></g><path d="M8 45C26 6 114 6 132 45C114 84 26 84 8 45Z" fill="none" stroke="#2a0c07" stroke-width="2"/><path d="M40 27.5C55 23.5 85 23.5 100 27.5" fill="none" stroke="#2a0c07" stroke-width="5" stroke-linecap="round" opacity=".55"/><path d="M42 27C56 23.5 84 23.5 98 27" fill="none" stroke="#f4efe6" stroke-width="2.6" stroke-linecap="round"/><g stroke="#f4efe6" stroke-width="3.4" stroke-linecap="round"><path d="M50 19.6L50 30.6"/><path d="M57 18.5L57 29.5"/><path d="M64 18L64 29"/><path d="M71 17.9L71 28.9"/><path d="M78 18.1L78 29.1"/><path d="M85 18.6L85 29.6"/><path d="M92 19.6L92 30.6"/></g></g></svg></span><span class="ball-label">Head-to-Head</span><span class="ball-hint">Tap to compare any two owners</span><span class="ball-years">Every game, ${gy0}&ndash;${gy1}</span></a></div>
         <h2>Championships</h2>${T('<th>Owner</th><th class="num">Titles</th><th>Years</th>', titles.map(([n, ys]) => `<tr><td>${esc(who(n) || n)}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}
         <div class="two-col">
           <div><h2>Highest Scores</h2>${T('<th>Team</th><th class="num">Pts</th><th>When</th>', top(scores, "pts").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pts)}</td><td>${yw(r)}</td></tr>`).join(""))}</div>
@@ -230,10 +232,12 @@
     },
 
     h2h(data, h, el) {
+      const [gy0, gy1] = gameYears(h);
       const T = (head, rows) => `<div class="table-wrap"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
       el.innerHTML = `<div class="title-row"><h1>Head-to-Head</h1><a class="h2h-btn" href="records.html">Record Book</a></div>
         <div class="h2h"><select id="h2h-a" aria-label="First owner"></select><span class="vs">vs</span><select id="h2h-b" aria-label="Second owner"></select></div>
-        <div id="h2h-out"></div>`;
+        <div id="h2h-out"></div>
+        <p class="h2h-note">Covers every game from ${gy0} through ${gy1}.  RT Sports kept no game scores before ${gy0}, so earlier seasons count toward championships but not head-to-head.</p>`;
       const all = [...data.owners, ...(data.formerOwners || [])];
       const opts = all.map((o) => `<option value="${esc(o.id)}">${esc(o.first)}</option>`).join("");
       const A = document.getElementById("h2h-a"), B = document.getElementById("h2h-b");

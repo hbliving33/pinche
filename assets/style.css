@@ -297,3 +297,5 @@ body.locked .site-header, body.locked footer { display: none; }
 @keyframes ball-ring { 0%, 70% { opacity: 0; transform: scale(.8); } 78% { opacity: .9; } 100% { opacity: 0; transform: scale(1.25); } }
 @keyframes ball-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .ball, .ball::after { animation: none; } }
+.ball-years { font-size: 11px; color: var(--accent); opacity: .85; font-variant-numeric: tabular-nums; }
+.h2h-note { font-size: 13px; color: var(--muted); margin-top: 14px; }
