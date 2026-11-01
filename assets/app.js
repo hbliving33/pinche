@@ -206,7 +206,7 @@
     },
 
     records(data, h, el) {
-      const g = allGames(h);
+      const g = allGames(h).filter((x) => !x.playoff); // records count regular-season games only
       const scores = g.flatMap((x) => [{ team: x.a, pts: x.as, year: x.year, week: x.week }, { team: x.b, pts: x.bs, year: x.year, week: x.week }]);
       const top = (arr, key, n = 10, asc = false) => [...arr].sort((p, q) => (asc ? p[key] - q[key] : q[key] - p[key])).slice(0, n);
       const blow = g.map((x) => ({ ...x, margin: Math.abs(x.as - x.bs), w: x.as > x.bs ? x.a : x.b, l: x.as > x.bs ? x.b : x.a, ws: Math.max(x.as, x.bs), ls: Math.min(x.as, x.bs) }));
@@ -220,7 +220,7 @@
       const sOf = (y) => h.seasons.find((x) => x.year === y);
       const notes = data.footnotes || [];
       el.innerHTML = `<div class="rb-head"><h1>Record Book</h1>${notes.length ? `<aside class="footnotes" aria-label="League footnotes"><div class="fn-title">League Footnotes</div><ol>${notes.map((n, i) => `<li><span class="fn-mark">${"*".repeat(i + 1)}</span>${esc(n)}</li>`).join("")}</ol></aside>` : ""}</div>
-        <nav class="subnav subnav-8" aria-label="Record Book sections"><a href="#titles">Champions</a><a href="#high">High Scores</a><a href="#low">Low Scores</a><a href="#blowouts">Blowouts</a><a href="#shootouts">Big Games</a><a href="#toilet">Toilet Bowl</a><a href="#points">Most Points</a><a href="#best">Best Records</a></nav>
+        <nav class="subnav subnav-8" aria-label="Record Book sections"><a href="#titles">Champions</a><a href="#high">High Scores</a><a href="#low">Low Scores</a><a href="#blowouts">Blowouts</a><a href="#shootouts">Big Games</a><a href="#points">Most Points</a><a href="#best">Best Records</a></nav>
         
         <h2 id="titles">Championships</h2>${T('<th>Owner</th><th class="num">Titles</th><th>Years</th>', titles.map(([n, ys]) => `<tr><td>${esc(who(n) || n)}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}
         <div class="two-col">
@@ -229,11 +229,6 @@
         </div>
         <h2 id="blowouts">Biggest Blowouts</h2>${T('<th>Winner</th><th class="num">Score</th><th class="hide-sm">Loser</th><th class="num">Margin</th><th>When</th>', top(blow, "margin").map((r) => `<tr><td>${tw(sOf(r.year), r.w)}</td><td class="num">${pts(r.ws)}&ndash;${pts(r.ls)}</td><td class="hide-sm">${tw(sOf(r.year), r.l)}</td><td class="num">${pts(r.margin)}</td><td>${yw(r)}</td></tr>`).join(""))}
         <h2 id="shootouts">Highest-Scoring Games</h2>${T('<th>Matchup</th><th class="num">Total</th><th>When</th>', top(combined, "total").map((r) => `<tr><td>${tw(sOf(r.year), r.a)} ${pts(r.as)}, ${tw(sOf(r.year), r.b)} ${pts(r.bs)}</td><td class="num">${pts(r.total)}</td><td>${yw(r)}</td></tr>`).join(""))}
-        <h2 id="toilet">Toilet Bowl</h2>
-        <div class="two-col">
-          <div>${T('<th class="num">Year</th><th>Loser</th><th class="num">Score</th>', h.seasons.filter((s) => s.toiletBowl).map((s) => `<tr><td class="num">${seasonLink(s.year)}</td><td>${tw(s, s.toiletBowl.loser)}</td><td class="num">${pts(s.toiletBowl.score[0])}&ndash;${pts(s.toiletBowl.score[1])}</td></tr>`).join(""))}</div>
-          <div>${T('<th>Owner</th><th class="num">Toilet bowls</th><th>Years</th>', Object.entries(h.seasons.filter((s) => s.toiletBowl).reduce((m, s) => { const o = s.toiletBowl.loserOwner; (m[o] = m[o] || []).push(s.year); return m; }, {})).sort((x, y) => y[1].length - x[1].length).map(([o, ys]) => `<tr><td>${esc(who(o))}</td><td class="num">${ys.length}</td><td>${ys.sort().join(", ")}</td></tr>`).join(""))}</div>
-        </div>
         <div class="two-col">
           <div><h2 id="points">Most Points, Season</h2>${T('<th>Team</th><th class="num">PF</th><th class="num">Year</th>', top(seasonsPF, "pf").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${pts(r.pf)}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
           <div><h2 id="best">Best Regular Season</h2>${T('<th>Team</th><th class="num">Record</th><th class="num">Year</th>', top(seasonsPF, "pct").map((r) => `<tr><td>${tw(sOf(r.year), r.team)}</td><td class="num">${r.w}-${r.l}${r.t ? "-" + r.t : ""}</td><td class="num">${seasonLink(r.year)}</td></tr>`).join(""))}</div>
@@ -317,10 +312,9 @@
         })));
         const titles = h.seasons.filter((s) => s.champion && s.champion.owner === id).map((s) => s.year).sort();
         const finals = h.seasons.filter((s) => s.champion && s.champion.runnerUpOwner === id).map((s) => s.year).sort();
-        const bowls = h.seasons.filter((s) => s.toiletBowl && s.toiletBowl.loserOwner === id).map((s) => s.year).sort();
         const finish = [];
-        imported(h).slice().reverse().forEach((s) => s.divisions.forEach((d) => d.teams.forEach((x) => { if (x.owner === id) finish.push({ y: s.year, f: x.finish, n: d.teams.length * s.divisions.length, champ: s.champion && s.champion.owner === id, bowl: s.toiletBowl && s.toiletBowl.loserOwner === id }); })));
-        return { w, l, t, pf, years, names, titles, finals, bowls, finish };
+        imported(h).slice().reverse().forEach((s) => s.divisions.forEach((d) => d.teams.forEach((x) => { if (x.owner === id) finish.push({ y: s.year, f: x.finish, n: d.teams.length * s.divisions.length, champ: s.champion && s.champion.owner === id}); })));
+        return { w, l, t, pf, years, names, titles, finals, finish };
       };
       const span = (ys) => { ys = ys.slice().sort((a, b) => a - b); const out = []; ys.forEach((y) => { const r = out[out.length - 1]; if (r && y === r[1] + 1) r[1] = y; else out.push([y, y]); }); return out.map(([a, b]) => (a === b ? a : `${a}&ndash;${b}`)).join(", "); };
       const card = (o, current) => {
@@ -334,9 +328,8 @@
         </div>
         <div class="stat-row">
           <div class="stat"><div class="label">Finals record</div><div class="value">${s.titles.filter((y) => y >= 2002).length}-${s.finals.length}</div>${s.finals.length ? `<div class="sub">lost ${s.finals.join(", ")}</div>` : ""}</div>
-          <div class="stat"><div class="label">Toilet bowls</div><div class="value">${s.bowls.length}</div>${s.bowls.length ? `<div class="sub">${s.bowls.join(", ")}</div>` : ""}</div>
         </div>
-        ${s.finish.length ? `<div class="stat"><div class="label">Finish by season</div><div class="finish">${s.finish.map((f) => `<span class="fin${f.champ ? " champ" : ""}${f.bowl ? " bowl" : ""}" title="${f.y}: ${f.champ ? "Champion" : f.bowl ? "Toilet bowl" : "Regular season " + f.f + " of " + f.n}"><b>${String(f.y).slice(2)}</b>${f.champ ? "&#127942;" : f.bowl ? "&#128701;" : f.f}</span>`).join("")}</div></div>` : ""}
+        ${s.finish.length ? `<div class="stat"><div class="label">Finish by season</div><div class="finish">${s.finish.map((f) => `<span class="fin${f.champ ? " champ" : ""}" title="${f.y}: ${f.champ ? "Champion" : "Regular season " + f.f + " of " + f.n}"><b>${String(f.y).slice(2)}</b>${f.champ ? "&#127942;" : f.f}</span>`).join("")}</div></div>` : ""}
         <div class="stat"><div class="label">Team names</div><ul class="names">${[...s.names].map(([n, ys]) => `<li>${esc(n)} <span class="muted">${span(ys)}</span></li>`).join("")}</ul></div>
         </div></article>`;
       };
@@ -387,6 +380,18 @@
 
   unlock().then(() => Promise.all([getData("league"), getData("history")]))
     .then(([data, hist]) => {
+      hist.seasons.forEach((s) => {
+        const champ = s.champion && s.champion.team && !s.championSource ? base(s.champion.team) : null;
+        const po = (s.weeks || []).filter((w) => w.playoff);
+        if (!champ || !po.length) return;
+        let alive = new Set([champ]);
+        for (let i = po.length - 1; i >= 0; i--) {
+          const keep = po[i].games.filter(([a, as, b, bs]) => alive.has(as > bs ? base(a) : base(b)) || (i === po.length - 1 && (base(a) === champ || base(b) === champ)));
+          po[i].games = keep;
+          alive = new Set(keep.flatMap(([a, , b]) => [base(a), base(b)]));
+        }
+        s.weeks = s.weeks.filter((w) => !w.playoff || w.games.length);
+      });
       const p = PAGES.find((x) => x.id === page);
       document.title = `${p ? p.label : page === "h2h" ? "Head-to-Head" : page === "partners" ? "Partners" : "Season"} | ${data.league.name}`;
       [...data.owners, ...(data.formerOwners || [])].forEach((o) => (WHO[o.id] = o.first));

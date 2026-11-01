@@ -338,3 +338,6 @@ th.num .sort-ind { margin-left: 2px; }
 .brand .memorial { display: block; font-family: var(--font); font-style: italic; font-weight: 500; font-size: 12px; letter-spacing: .6px; text-transform: none; color: rgba(255,255,255,.72); line-height: 1.2; margin-top: 4px; }
 .brand .memorial::before { content: ""; display: inline-block; width: 14px; height: 1px; background: rgba(255,224,138,.7); vertical-align: middle; margin-right: 7px; }
 @media (max-width: 760px) { .brand .memorial { font-size: 11px; margin-top: 3px; } }
+/* Unofficial stats */
+.unofficial { display: inline-block; font-family: var(--font); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; vertical-align: middle; align-self: center; }
+.note { color: var(--muted); font-size: 13.5px; margin: -4px 0 12px; max-width: 760px; }
